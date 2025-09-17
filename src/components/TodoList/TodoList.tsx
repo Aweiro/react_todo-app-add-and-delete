@@ -28,20 +28,27 @@ export const TodoList: React.FC<Props> = ({
   function updatePost(todoToUpdate: Todo) {
     onLoading(prev => [...prev, todoToUpdate.id]);
 
-    todoService
+    return todoService
       .updateTodos(todoToUpdate)
       .then(updatedTodo => {
         onTodos(currentTodos => {
           return currentTodos.map(currentTodo => {
             if (currentTodo.id === updatedTodo.id) {
-              return { ...currentTodo, completed: !currentTodo.completed };
+              return {
+                ...currentTodo,
+                completed: updatedTodo.completed,
+                title: updatedTodo.title,
+              };
             }
 
             return currentTodo;
           });
         });
       })
-      .catch(() => onErrorMessage(ErrorMessages.Update))
+      .catch(() => {
+        onErrorMessage(ErrorMessages.Update);
+        throw new Error();
+      })
       .finally(() =>
         onLoading(prev => prev.filter(item => item !== todoToUpdate.id)),
       );
@@ -50,14 +57,17 @@ export const TodoList: React.FC<Props> = ({
   function deleteTodos(todoId: number) {
     onLoading(prev => [...prev, todoId]);
 
-    todoService
+    return todoService
       .deleteTodos(todoId)
       .then(() => {
         onTodos(currentTodos =>
           currentTodos.filter(todo => todo.id !== todoId),
         );
       })
-      .catch(() => onErrorMessage(ErrorMessages.Delete))
+      .catch(() => {
+        onErrorMessage(ErrorMessages.Delete);
+        throw new Error();
+      })
       .finally(() => onLoading(prev => prev.filter(item => item !== todoId)));
   }
 
@@ -78,7 +88,7 @@ export const TodoList: React.FC<Props> = ({
         <TodoItem
           key={todo.id}
           todo={todo}
-          onHandleChecked={updatePost}
+          onUpdatePost={updatePost}
           onDeleteTodos={deleteTodos}
           loading={loading}
         />
@@ -87,8 +97,8 @@ export const TodoList: React.FC<Props> = ({
       {tempTodo && (
         <TodoItem
           todo={tempTodo}
-          onHandleChecked={() => {}}
-          onDeleteTodos={() => {}}
+          onUpdatePost={updatePost}
+          onDeleteTodos={deleteTodos}
           loading={loading}
         />
       )}

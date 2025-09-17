@@ -5,9 +5,9 @@ import { Todo } from './types/Todo';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { TodoList } from './components/TodoList/TodoList';
+import { ErrorMessages } from './types/Errors';
 // eslint-disable-next-line max-len
 import { ErrorNotification } from './components/ErrorNotification/ErrorNotification';
-import { ErrorMessages } from './types/Errors';
 
 type FilterTypes = 'All' | 'Active' | 'Completed';
 

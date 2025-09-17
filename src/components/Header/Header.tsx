@@ -73,9 +73,13 @@ export const Header: React.FC<Props> = ({
       })
       .then(newPost => {
         onTodos(currentTodos => [...currentTodos, newPost]);
+        setQuery('');
+        setTimeout(() => inputRef.current?.focus(), 0);
       })
-      .catch(() => onErrorMessage(ErrorMessages.Add))
-      .then(() => setQuery(''))
+      .catch(() => {
+        onErrorMessage(ErrorMessages.Add);
+        setTimeout(() => inputRef.current?.focus(), 0);
+      })
       .finally(() => {
         onTempTodo(null);
         setDisabledInput(false);

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
+import React from 'react';
 import { Todo } from '../../types/Todo';
 import * as todoService from '../../api/todos';
-import React from 'react';
 import { ErrorMessages } from '../../types/Errors';
 
 type FilterTypes = 'All' | 'Active' | 'Completed';
