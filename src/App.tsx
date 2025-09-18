@@ -8,25 +8,26 @@ import { TodoList } from './components/TodoList/TodoList';
 import { ErrorMessages } from './types/Errors';
 // eslint-disable-next-line max-len
 import { ErrorNotification } from './components/ErrorNotification/ErrorNotification';
-
-type FilterTypes = 'All' | 'Active' | 'Completed';
+import { FilterTypes } from './types/FilterTypes';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [errorMessage, setErrorMessage] = useState<ErrorMessages | ''>('');
-  const [selectedFilter, setSelectedFilter] = useState<FilterTypes>('All');
+  const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(
+    FilterTypes.All,
+  );
   const [loading, setLoading] = useState<number[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [disabledButton, setDisabledButton] = useState(true);
 
-  function loadTodos() {
+  const loadTodos = () => {
     todoService
       .getTodos()
       .then((todosList: Todo[]) => {
         setTodos(todosList);
       })
       .catch(() => setErrorMessage(ErrorMessages.Load));
-  }
+  };
 
   const filteredTodos = useMemo(() => {
     if (selectedFilter === 'Active') {
@@ -80,8 +81,7 @@ export const App: React.FC = () => {
           onErrorMessage={setErrorMessage}
           onDisabledButton={setDisabledButton}
         />
-        {/* Hide the footer if there are no todos */}
-        {todos.length > 0 && (
+        {!!todos.length && (
           <Footer
             todos={todos}
             filterType={selectedFilter}
@@ -92,9 +92,6 @@ export const App: React.FC = () => {
           />
         )}
       </div>
-
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
 
       <ErrorNotification
         errorMessage={errorMessage}
